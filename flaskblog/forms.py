@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, SelectField, TimeField, IntegerField, FloatField, FieldList, FormField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, SelectField, TimeField, IntegerField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
 from flask_wtf.file import FileField, FileAllowed
-from flaskblog.models import User, Sport
-import datetime
+from flaskblog.models import User
 import re
+import datetime
 
 class LoginForm(FlaskForm):
     email= StringField('Email', validators=[DataRequired(), Email()])
@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     name=StringField('Name', validators=[DataRequired(), Length(min=2, max=30)])#, Regexp('^[A-Za-z]*$','Name must have only letters')])
     surname=StringField('Surname', validators=[DataRequired(), Length(min=2, max=30)])#, Regexp('^[A-Za-z]*$','Surname must have only letters')])
-    birthdate=DateField('Birthdate', format='%d-%m-%Y', validators=[DataRequired()])
+    birthdate=DateField('Birthdate', format='%d-%m-%Y', validators=[DataRequired("Incorrect data format, should be DD-MM-YYYY")])
     email= StringField('Email', validators=[DataRequired(), Email()])
     password=PasswordField('Password', validators=[DataRequired(), Length(min=6, max=30), Regexp('^.*(?=.*\d)(?=.*[a-z])'
                         '(?=.*[A-Z])(?=.*[!$%&#=?]).*$', message='Password must include at least one uppercase character, one digit and one special character (!$%&#=?).')])
@@ -31,8 +31,9 @@ class RegistrationForm(FlaskForm):
 class UpdateProfileForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=30)])#, Regexp('^[A-Za-z]*$','Name must have only letters')])
     surname = StringField('Surname', validators=[DataRequired(), Length(min=2, max=30)])  # , Regexp('^[A-Za-z]*$','Surname must have only letters')])
-    birthdate = DateField('Birthdate', format='%d-%m-%Y', validators=[DataRequired()])
+    birthdate = DateField('Birthdate', format='%d-%m-%Y', validators=[DataRequired("Incorrect data format, should be DD-MM-YYYY")])
     email = StringField('Email', validators=[DataRequired(), Email()])
+
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     sport1 = SelectField('Sport', [DataRequired()], choices=[])
     level1 = SelectField('Level', [DataRequired()],
@@ -48,6 +49,30 @@ class UpdateProfileForm(FlaskForm):
                                   ('advanced', 'Advanced')])
     submit = SubmitField('Update')
 
+
+class CreateForm(FlaskForm):
+
+    def validate_date(form, field):
+        if field.data < datetime.date.today():
+            raise ValidationError("The date cannot be in the past!")
+
+
+    sport= SelectField('Sport', [DataRequired()], choices=[])
+    level= SelectField('Level', [DataRequired()], choices=[('never', 'Never'), ('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')])
+    place= SelectField('Place', [DataRequired()], choices=[])
+    date= DateField('Date', format='%d-%m-%Y', validators=[DataRequired("Incorrect data format, should be DD-MM-YYYY")])
+    time= TimeField('Time', format='%H:%M', validators=[DataRequired("Incorrect data format, should be HH:MM")])
+    np= IntegerField('Number of participants needed', validators=[DataRequired()])
+    cost= FloatField('Price [Euro]', validators=[DataRequired()])
+    submit = SubmitField('Create')
+
+class UpdatePlaceForm(FlaskForm):
+    place=StringField('place', validators=[DataRequired()])
+    submit= SubmitField('Update')
+
+    def validate_place(self ):
+        #controllo che il testo sia corretto
+        pass
 
 
 

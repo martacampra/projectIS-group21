@@ -17,7 +17,16 @@
             <p class="article-content"> Number of participants needed: <b>{{ event.np }}</b></p>
               <p class="article-content"> Cost per participant: <b> {{ event.cost }} € </b> </p>
 
-           <a class="button" href="{{ url_for('join') }}">Join!</a>
+
+
+        <div class="modal-footer">
+
+          <form action="{{ url_for('join', event_id=event.id) }}" method="POST">
+            <input class="btn btn-info" type="submit" value="Join">
+          </form>
+        </div>
+
+
           </div>
         </article>
     {% endfor %}

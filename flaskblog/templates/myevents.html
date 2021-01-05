@@ -1,6 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 {% extends "layout.html" %}
 {% block content %}
-    <h1>MY events</h1>
+    {% for event in posts %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+             <!-- <a class="mr-2" href="#">{{ event.date }}</a>
+              <small class="text-muted">{{ event.time }}</small> -->
+                <a class="mr-2" href="#">{{ event.creator.name }} {{ event.creator.surname }}</a>
+            </div>
+            <h4><a class="article-content" > <b>{{ event.place.name }}</b></a></h4>
+              <p class="article-content"> Sport: <b> {{ event.sportevent.name }}  </b> </p>
+              <p class="article-content"> When: <b>{{ event.date }}</b> at <b>{{ event.time }} </b> </p>
+            <p class="article-content"> Number of participants needed: <b>{{ event.np }}</b></p>
+              <p class="article-content"> Cost per participant: <b> {{ event.cost }} € </b> </p>
+
+
+        <div class="modal-footer">
+
+          <form action="{{ url_for('remove', event_id=event.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Remove event">
+          </form>
+        </div>
+          </div>
+        </article>
+    {% endfor %}
+    {% for event in parts %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+             <!-- <a class="mr-2" href="#">{{ event.date }}</a>
+              <small class="text-muted">{{ event.time }}</small> -->
+                <a class="mr-2" href="#">{{ event.creator.name }} {{ event.creator.surname }}</a>
+            </div>
+            <h4><a class="article-content" > <b>{{ event.place.name }}</b></a></h4>
+              <p class="article-content"> Sport: <b> {{ event.sportevent.name }}  </b> </p>
+              <p class="article-content"> When: <b>{{ event.date }}</b> at <b>{{ event.time }} </b> </p>
+            <p class="article-content"> Number of participants needed: <b>{{ event.np }}</b></p>
+              <p class="article-content"> Cost per participant: <b> {{ event.cost }} € </b> </p>
+
+
+        <div class="modal-footer">
+
+          <form action="{{ url_for('cancel', event_id=event.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Cancel participation">
+          </form>
+        </div>
+          </div>
+        </article>
+    {% endfor %}
 {% endblock content %}
