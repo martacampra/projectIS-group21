@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "layout.html" %}
+{% block content %}
+    {% for place in places %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h4><a class="article-title">{{ place.name }}</a></h4>
+              <small class="text-muted">{{ place.address }}</small>
+
+
+            </div>
+            <a class="mr-2" href="#" href="#">{{ place.telephone }}</a>
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
