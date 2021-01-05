@@ -103,8 +103,6 @@ def profile():
         s = (str(x.name), str(x.name).capitalize())
         available_sports.append(s)
     form.sport1.choices = available_sports
-    form.sport2.choices = available_sports
-    form.sport3.choices = available_sports
 
     if form.validate_on_submit():
         #us = SportPlayed.query.filter_by(played=current_user).all()
@@ -229,12 +227,6 @@ def create():
     return render_template('create.html', title='Create', form=form)
 
 
-
-#@app.route("/update", methods=['GET', 'POST'])
-#def update_place2():
- #   form=UpdatePlaceForm()
-  #  p=(form.place.data, form.place.data.capitalized)
-   # available_place.append(p)
 
 
 @app.route("/myevents/<int:event_id>/remove", methods=['POST'])
