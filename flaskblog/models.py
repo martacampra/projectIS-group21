@@ -9,8 +9,9 @@ def load_user(user_id):
 
 class Participant(db.Model):
     __tablename__='Participant'
-    u_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    e_id = db.Column(db.Integer, db.ForeignKey('event.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    u_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
+    e_id = db.Column(db.Integer, db.ForeignKey('event.id'), index=True)
 
 #Participant = db.Table('Participant',
                     #  db.Column('user_id',db.Integer, db.ForeignKey('user.id')),

@@ -5,6 +5,7 @@
 {% block content %}
     {% for event in posts %}
         <article class="media content-section">
+          <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + event.creator.image_file) }}">
           <div class="media-body">
             <div class="article-metadata">
              <!-- <a class="mr-2" href="#">{{ event.date }}</a>
@@ -21,7 +22,7 @@
 
         <div class="modal-footer">
 
-          <form action="{{ url_for('join', event_id=event.id) }}" method="POST">
+          <form action="{{ url_for('events.join', event_id=event.id) }}" method="POST">
             <input class="btn btn-info" type="submit" value="Join">
           </form>
         </div>

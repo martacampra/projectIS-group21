@@ -39,21 +39,21 @@
                     {% endif %}
                 </div>
 
+
                 <div class="form-group">
-                        {{ form.place.label(class="form-control-label") }}
+                       {{ form.place.label(class="form-control-label") }}
 
-                        {% if form.place.errors %}
-                            {{ form.place(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.place.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.place(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
-
+                       {% if form.place.errors %}
+                           {{ form.place(class="form-control form-control-lg is-invalid") }}
+                           <div class="invalid-feedback">
+                               {% for error in form.place.errors %}
+                                   <span>{{ error }}</span>
+                               {% endfor %}
+                           </div>
+                       {% else %}
+                           {{ form.place(class="form-control form-control-lg") }}
+                       {% endif %}
+                </div>
 
                 <div class="form-group">
 
@@ -88,6 +88,7 @@
                         {{ form.time(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+
                 <div class="form-group">
                     {{ form.np.label(class="form-control-label") }}
                     {% if form.np.errors %}
@@ -121,4 +122,5 @@
             </div>
         </form>
     </div>
+
 {% endblock content %}
