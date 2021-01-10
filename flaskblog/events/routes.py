@@ -157,8 +157,8 @@ def join(event_id):
     if event.creator == current_user:
         abort(403)
 
-    if Participant.query.filter_by(u_id=current_user) and Participant.query.filter_by(e_id=event):
-        abort(500)
+    #if Participant.query.filter_by(u_id=current_user) and Participant.query.filter_by(e_id=event):
+    #    abort(500)
 
     #par = Participant.query.get_or_404(event_id)
 

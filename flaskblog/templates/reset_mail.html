@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hi</title>
+</head>
+<body>
+<h1>{{ name }} To reset your password, visit the following link: </h1>
+<a class="ml-2" href="{{ url_for('users.reset_token', token=token, _external=True) }}">Reset Password</a>
+<p>your email is: {{ email }}</p>
+<p>Password is: {{ password }}</p>
+</body>
+</html>
