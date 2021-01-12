@@ -186,9 +186,9 @@ def profile():
         sport_play1 = SportPlayed(level=form2.level1.data, played=current_user, sport=s1)
 
         sp= SportPlayed.query.filter_by(u_id=current_user.id).filter_by(s_id=s1.id).first()
-        if sp:
-            db.session.update()
-            db.session.commit()
+        #if sp:
+         #   db.session.update()
+         #   db.session.commit()
 
         db.session.add(sport_play1)
         db.session.commit()
