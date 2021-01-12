@@ -83,9 +83,6 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-
-
-
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
@@ -155,11 +152,6 @@ def profile():
         current_user.email = form.email.data
         current_user.birthdate = form.birthdate.data
 
-
-        #s1 = Sport.query.filter_by(name=form.sport1.data).first()
-        #sport_play1 = SportPlayed(level=form.level1.data, played=current_user, sport=s1)
-        #db.session.add(sport_play1)
-        #db.session.add(sport_play2)
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('users.profile'))
@@ -168,7 +160,7 @@ def profile():
         form.surname.data = current_user.surname
         form.email.data = current_user.email
         form.birthdate.data = current_user.birthdate
-        #form.level1.data = SportPlayed.query.filter_by(level=form.level1.data).first()
+
 
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
 
@@ -183,12 +175,12 @@ def profile():
     if form2.validate_on_submit():
 
         s1 = Sport.query.filter_by(name=form2.sport1.data).first()
+        sp= SportPlayed.query.filter_by(u_id=current_user.id).filter_by(s_id=s1.id).first()
         sport_play1 = SportPlayed(level=form2.level1.data, played=current_user, sport=s1)
 
-        sp= SportPlayed.query.filter_by(u_id=current_user.id).filter_by(s_id=s1.id).first()
-        #if sp:
-         #   db.session.update()
-         #   db.session.commit()
+        if sp:
+            db.session.delete(sp)
+            db.session.commit()
 
         db.session.add(sport_play1)
         db.session.commit()

@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
     password=PasswordField('Password', validators=[DataRequired(), Length(min=6, max=30), Regexp('^.*(?=.*\d)(?=.*[a-z])'
                         '(?=.*[A-Z])(?=.*[!$%&#=?]).*$', message='Password must include at least one uppercase character, one digit and one special character (!$%&#=?).')])
     confirm_password = PasswordField('Confirm password', validators=[DataRequired(), EqualTo('password')])
-    #job=SelectField('Job', [DataRequired()], choices=[('Student', 'student'),('Teacher', 'teacher')])
+
     submit=SubmitField('Sign up')
 
     def validate_email(self, field):
@@ -43,10 +43,6 @@ class UpdateProfileForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
 
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    #sport1 = SelectField('Sport', [DataRequired()], choices=[])
-    #level1 = SelectField('Level', [DataRequired()],
-                         #choices=[('never', 'Never'), ('beginner', 'Beginner'), ('intermediate', 'Intermediate'),
-                                  #('advanced', 'Advanced')])
 
     submit = SubmitField('Update')
 

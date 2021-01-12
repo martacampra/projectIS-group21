@@ -65,8 +65,6 @@ sports = [
 def myevents():
     posts = Event.query.filter_by(user_id=current_user.id).all()
     parts = Event.query.join(Event.participant2).filter_by(u_id=current_user.id).all()
-    # pa = Participant.query.filter_by(joined=current_user).all()
-    # parts = Event.query.filter_by(id=pa)
 
     return render_template('myevents.html', title='My Events', posts=posts, parts=parts)
 
@@ -122,10 +120,6 @@ def remove(event_id):
         db.session.delete(x)
         db.session.commit()
 
-
-    # pr = Participant.query.get_or_404(id)
-    # if Participant.e_id == None:
-    # db.session.delete(pr)
     flash('Your event has been removed!', 'success')
     return redirect(url_for('events.myevents'))
 
@@ -133,10 +127,9 @@ def remove(event_id):
 @events.route("/myevents/<int:event_id>/cancel", methods=['POST'])
 @login_required
 def cancel(event_id):
-    #parti = Participant.query.get_or_404(event_id).all()
-    #parti = Participant.query.filter_by(e_id=event_id).all()
+
     parti= Participant.query.filter_by(u_id=current_user.id).filter_by(e_id=event_id).first()
-    #if parti.joined == current_user:
+
     db.session.delete(parti)
     db.session.commit()
 
