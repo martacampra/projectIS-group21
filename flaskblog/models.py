@@ -17,23 +17,16 @@ class Participant(db.Model):
     e_id = db.Column(db.Integer, db.ForeignKey('event.id'), index=True)
 
 
-# Participant = db.Table('Participant',
-#  db.Column('user_id',db.Integer, db.ForeignKey('user.id')),
-#  db.Column('event_id',db.Integer, db.ForeignKey('event.id'))
-# )
-
 
 class SportPlayed(db.Model):
     __tablename__ = 'SportPlayed'
-    u_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    s_id = db.Column(db.Integer, db.ForeignKey('sport.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    u_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
+    s_id = db.Column(db.Integer, db.ForeignKey('sport.id'), index=True)
     level = db.Column(db.String(60))
+    #u_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    #s_id = db.Column(db.Integer, db.ForeignKey('sport.id'), primary_key=True)
 
-    # user=db.relationship('User', back_populates="sports")
-    # sport = db.relationship('Sport', back_populates="users")
-    # def __init__(self):
-    # self.u_id=0
-    # self.s_id=0
 
     def __repr__(self):
         return '<SportPlayed %r>' % self.level
@@ -49,10 +42,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     events = db.relationship('Event', backref='creator', lazy=True)
-    # events_3=db.relationship('Event',
-    #  secondary=Participant,
-    # backref=db.backref('users1', lazy='dynamic'),
-    #  lazy='dynamic')
     sport_played_2 = db.relationship('SportPlayed', foreign_keys=[SportPlayed.u_id], backref='played', lazy=True)
     participant = db.relationship('Participant', foreign_keys=[Participant.u_id], backref='joined', lazy=True)
 
@@ -84,6 +73,7 @@ class Event(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     sport_id = db.Column(db.Integer, db.ForeignKey('sport.id'), nullable=False)
+    level = db.Column(db.String(60))
     participant2 = db.relationship('Participant', foreign_keys=[Participant.e_id], backref='part', lazy=True)
 
     def __repr__(self):
@@ -105,8 +95,6 @@ class Sport(db.Model):
     __tablename__ = 'sport'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
-    # level= db.Column(db.String(60), nullable=False)
-    # user_id= db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     sport_played = db.relationship('SportPlayed', foreign_keys=[SportPlayed.s_id], backref='sport', lazy=True)
     events_4 = db.relationship('Event', backref='sportevent', lazy=True)
 

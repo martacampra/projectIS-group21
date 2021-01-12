@@ -183,16 +183,16 @@ def profile():
     if form2.validate_on_submit():
 
         s1 = Sport.query.filter_by(name=form2.sport1.data).first()
-        #sp = SportPlayed.query.filter_by(sport=s1).first()
         sport_play1 = SportPlayed(level=form2.level1.data, played=current_user, sport=s1)
-        #sp = SportPlayed.query.get_or_404()
 
-        #if sp.played == current_user:
-           # sp.level = form2.level1.data
-           # db.session.commit()
+        sp= SportPlayed.query.filter_by(u_id=current_user.id).filter_by(s_id=s1.id).first()
+        if sp:
+            db.session.update()
+            db.session.commit()
 
         db.session.add(sport_play1)
         db.session.commit()
+
         flash('Sport has been added!', 'success')
         return redirect(url_for('users.profile'))
 

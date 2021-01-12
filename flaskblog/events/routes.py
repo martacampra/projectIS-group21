@@ -1,8 +1,12 @@
 from flask import Blueprint, render_template, url_for, flash, redirect, abort
+from sqlalchemy import and_
+from wtforms import meta
+
 from flaskblog import db
 from flaskblog.events.forms import CreateForm
 from flaskblog.models import Club, Sport, Event, Participant
 from flask_login import current_user, login_required
+
 events = Blueprint('events', __name__)
 
 available_place = []
@@ -37,7 +41,7 @@ places = [
     }
 ]
 
-sports=[
+sports = [
     {
         'name': 'Basketball'
     },
@@ -59,10 +63,10 @@ sports=[
 @events.route("/myevents")
 @login_required
 def myevents():
-    posts = Event.query.filter_by(user_id = current_user.id).all()
+    posts = Event.query.filter_by(user_id=current_user.id).all()
     parts = Event.query.join(Event.participant2).filter_by(u_id=current_user.id).all()
-    #pa = Participant.query.filter_by(joined=current_user).all()
-    #parts = Event.query.filter_by(id=pa)
+    # pa = Participant.query.filter_by(joined=current_user).all()
+    # parts = Event.query.filter_by(id=pa)
 
     return render_template('myevents.html', title='My Events', posts=posts, parts=parts)
 
@@ -70,7 +74,6 @@ def myevents():
 @events.route("/create", methods=['GET', 'POST'])
 @login_required
 def create():
-
     available_place = []
     for c in Club.query.all():
         p = (str(c.name), str(c.name).capitalize())
@@ -84,14 +87,15 @@ def create():
     form = CreateForm()
     print('look here:')
     print(form.place.choices)
-    form.place.choices=available_place
-    form.sport.choices=available_sports
+    form.place.choices = available_place
+    form.sport.choices = available_sports
 
     if form.validate_on_submit():
         c = Club.query.filter_by(name=form.place.data).first()
         s = Sport.query.filter_by(name=form.sport.data).first()
 
         event = Event(date=form.date.data, time=form.time.data, cost=form.cost.data, np=form.np.data,
+                      level=form.level.data,
                       creator=current_user, place=c, sportevent=s)
 
         db.session.add(event)
@@ -103,12 +107,6 @@ def create():
 
 
 
-#@app.route("/update", methods=['GET', 'POST'])
-#def update_place2():
- #   form=UpdatePlaceForm()
-  #  p=(form.place.data, form.place.data.capitalized)
-   # available_place.append(p)
-
 
 @events.route("/myevents/<int:event_id>/remove", methods=['POST'])
 @login_required
@@ -117,17 +115,17 @@ def remove(event_id):
     if event.creator != current_user:
         abort(403)
 
-    #pa = Participant.query.filter_by(e_id=event_id).all()
-
-    #if pa:
-        #db.session.delete(pa)
-        #db.session.commit()
-
+    pa = Participant.query.filter_by(e_id=event_id).all()
     db.session.delete(event)
     db.session.commit()
-    #pr = Participant.query.get_or_404(id)
-    #if Participant.e_id == None:
-        #db.session.delete(pr)
+    for x in pa:
+        db.session.delete(x)
+        db.session.commit()
+
+
+    # pr = Participant.query.get_or_404(id)
+    # if Participant.e_id == None:
+    # db.session.delete(pr)
     flash('Your event has been removed!', 'success')
     return redirect(url_for('events.myevents'))
 
@@ -135,13 +133,12 @@ def remove(event_id):
 @events.route("/myevents/<int:event_id>/cancel", methods=['POST'])
 @login_required
 def cancel(event_id):
-    parti = Participant.query.get_or_404(event_id)
-
-    if parti.joined == current_user:
-        db.session.delete(parti)
-        db.session.commit()
-
-    #par = Participant.query.filter_by(u_id=current_user.id)
+    #parti = Participant.query.get_or_404(event_id).all()
+    #parti = Participant.query.filter_by(e_id=event_id).all()
+    parti= Participant.query.filter_by(u_id=current_user.id).filter_by(e_id=event_id).first()
+    #if parti.joined == current_user:
+    db.session.delete(parti)
+    db.session.commit()
 
     flash('You have cancelled your participation', 'success')
     return redirect(url_for('events.myevents'))
@@ -150,22 +147,14 @@ def cancel(event_id):
 @events.route("/home/<int:event_id>/join", methods=['POST'])
 @login_required
 def join(event_id):
-    event = Event.query.get_or_404(event_id)
+    if Participant.query.filter_by(u_id=current_user.id).filter_by(e_id=event_id).first():
+        abort(500)
 
+    event = Event.query.get_or_404(event_id)
     participant = Participant(joined=current_user, part=event)
 
     if event.creator == current_user:
         abort(403)
-
-    #if Participant.query.filter_by(u_id=current_user) and Participant.query.filter_by(e_id=event):
-    #    abort(500)
-
-    #par = Participant.query.get_or_404(event_id)
-
-    #pt = Participant.query.filter_by(u_id=current_user.id).filter_by(e_id=par).first()
-     #Event.query.join(Event.participant2).filter_by(u_id=current_user.id).all()
-    #if pt:
-      #  abort(500)
 
     db.session.add(participant)
     db.session.commit()
@@ -175,17 +164,15 @@ def join(event_id):
 
 @events.route("/getplace", methods=['GET', 'POST'])
 def getplace():
-
     for p in places:
-        c= Club(name=p['name'], address=p['address'], phone=p['telephone'])
+        c = Club(name=p['name'], address=p['address'], phone=p['telephone'])
         if Club.query.filter_by(phone=p['telephone']).first():
             break
         else:
             db.session.add(c)
             db.session.commit()
 
-
-    available_place=[]
+    available_place = []
     for c in Club.query.all():
         p = (str(c.name), str(c.name).capitalize())
         available_place.append(p)
